@@ -10,7 +10,7 @@ template <typename T>
 class NodoFibonacci{
   private:
     T m_dato{};
-    std::list<NodoFibonacci<T> *> m_hijos{};
+    std::list<NodoFibonacci<T> *> m_hijos;
   public:
     NodoFibonacci(T m_dato) : m_dato(m_dato) {};
     T obtenerDato(){
@@ -52,9 +52,11 @@ class HeapFibonacci{
       auto it = m_heap.end();
       it--;
       for (; it != m_heap.begin(); it--) {
-        if (gradeCounter[(*it)->obtenerRango()] != m_heap.end()) {
+        if (gradeCounter[(*it)->obtenerRango()] != m_heap.end() && gradeCounter[(*it)->obtenerRango()] != it) {
           int n = (*it)->obtenerRango();
+          // std::cout << "El grado del elemento: " << (*it)->obtenerDato() << " y " << (*gradeCounter[(*it)->obtenerRango()])->obtenerDato() << " son iguales \n";
           it = unir(it, gradeCounter[(*it)->obtenerRango()]);
+          // std::cout << "El iterador se encuentra en: " << (*it)->obtenerDato() << std::endl;
           it++;
           gradeCounter[n] = m_heap.end();
         } else{
@@ -71,13 +73,14 @@ class HeapFibonacci{
         m_heap.push_back(hijo);
       }
       m_heap.erase(m_pMin);
+      size--;
+      // printTree();
       compactar();
       m_pMin = m_heap.end();
       for (auto it = m_heap.begin(); it != m_heap.end(); it++){
         if(m_pMin == m_heap.end() || (*m_pMin) -> obtenerDato() > (*it) -> obtenerDato())
           m_pMin = it;
       }
-      size--;
     }
     
     typename std::list<NodoFibonacci<T>*>::iterator getMin(){
@@ -101,20 +104,20 @@ class HeapFibonacci{
       std::cout << "\n";
     }
     
+    int getSize(){
+      return size;
+    }
 };
 
 int main() {
-	HeapFibonacci<int> testFib;
-  testFib.insert(1);
-  testFib.printTree();
-  testFib.insert(2);
-  testFib.printTree();
-  testFib.insert(3);
-  testFib.printTree();
-  testFib.insert(-1);
-  testFib.printTree();
-  testFib.extractMin();
-  testFib.printTree();
+  HeapFibonacci<int> testFib;
+  for(int i = 10000; i >= 1; i--){
+    testFib.insert(i);
+  }
+  for(int i = 10000; i >= 2; i--){
+    std::cout << (*testFib.getMin())->obtenerDato() << std::endl;
+    testFib.extractMin();
+  }
   std::cout << (*testFib.getMin())->obtenerDato() << std::endl;
-	return 0;
+  return 0;
 }
