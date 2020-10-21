@@ -1,18 +1,75 @@
 #include <iostream>
 #include <list>
+#include <utility>
 #include <vector>
 #include <cmath>
 #include <fstream>
 
 #include "CImg.h"
 
+class Imagen {
+private:
+    std::string ruta;
+    std::vector <float> vc;
+
+public:
+    const std::string &getRuta() const {
+        return ruta;
+    }
+
+    void setRuta(const std::string &string) {
+        Imagen::ruta = string;
+    }
+
+    const std::vector<float> &getVc() const {
+        return vc;
+    }
+
+    void setVc(const std::vector<float> &vector) {
+        Imagen::vc = vector;
+    }
+};
+
+class Arista {
+private:
+    std::string origen;
+    std::string destino;
+    float peso{};
+
+public:
+    const std::string &getOrigen() const {
+        return origen;
+    }
+
+    void setOrigen(const std::string &string) {
+        Arista::origen = string;
+    }
+
+    const std::string &getDestino() const {
+        return destino;
+    }
+
+    void setDestino(const std::string &string) {
+        Arista::destino = string;
+    }
+
+    float getPeso() const {
+        return peso;
+    }
+
+    void setPeso(float d) {
+        Arista::peso = d;
+    }
+};
+
 template <typename T>
 class NodoFibonacci{
 private:
     T m_dato{};
+    Arista arista{};
     std::list<NodoFibonacci<T> *> m_hijos;
 public:
-    explicit NodoFibonacci(T m_dato) : m_dato(m_dato) {};
+    explicit NodoFibonacci(T m_dato, Arista arista1) : m_dato(m_dato), arista(std::move(arista1)) {};
     T obtenerDato(){
         return this -> m_dato;
     }
@@ -87,8 +144,8 @@ public:
         return m_pMin;
     }
 
-    void insert(T dato){
-        NodoFibonacci<T> * nuevoNodo = new NodoFibonacci(dato);
+    void insert(T dato, const Arista& arista){
+        auto* nuevoNodo = new NodoFibonacci<T>(dato, arista);
         this -> m_heap.push_back(nuevoNodo);
         if(m_pMin == m_heap.end() || (*m_pMin) -> obtenerDato() > nuevoNodo -> obtenerDato())
         {
@@ -107,17 +164,6 @@ public:
     int getSize(){
         return size;
     }
-};
-
-struct imagen {
-    std::string ruta;
-    std::vector <float> vc;
-};
-
-struct arista {
-    std::string origen;
-    std::string destino;
-    float peso{};
 };
 
 std::vector <float> vectorizar(cimg_library::CImg <float> &img) {
@@ -143,9 +189,9 @@ int main() {
 
     system("ls ../prueba/ \"*.jpg\" > ../database.txt");
 
-    std::vector <arista> aristas;
+    std::vector <Arista> aristas;
 
-    std::vector <imagen> imagenes;
+    std::vector <Imagen> imagenes;
 
     std::ifstream rutas("../database.txt");
     std::string ruta;
@@ -161,11 +207,11 @@ int main() {
 
         std::vector <float> vc = vectorizar(C);
 
-        imagen img;
-        img.ruta = temp;
-        img.vc = vc;
+        Imagen imagen;
+        imagen.setRuta(temp);
+        imagen.setVc(vc);
 
-        imagenes.emplace_back(img);
+        imagenes.emplace_back(imagen);
 
         //A.display();
         //B.display();
@@ -174,19 +220,27 @@ int main() {
 
     for (int i = 0; i < imagenes.size()-1; i++) {
         for (int j = i+1; j < imagenes.size(); j++) {
-            arista ar;
-            ar.origen = imagenes[i].ruta;
-            ar.destino = imagenes[j].ruta;
+            Arista arista;
+            arista.setOrigen(imagenes[i].getRuta());
+            arista.setDestino(imagenes[j].getRuta());
             float suma = 0;
-            for (int k = 0; k < imagenes[i].vc.size(); k++) {
-                suma += (float)pow(imagenes[i].vc[k] - imagenes[j].vc[k], 2);
+            for (int k = 0; k < imagenes[i].getVc().size(); k++) {
+                suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], 2);
             }
-            ar.peso = (float)std::sqrt(suma);
-            aristas.emplace_back(ar);
+            arista.setPeso((float)std::sqrt(suma));
+            aristas.emplace_back(arista);
         }
     }
 
-    
+    HeapFibonacci <float> heapFibonacci;
+    for (const auto& it : aristas) {
+        heapFibonacci.insert(it.getPeso(), it);
+    }
+    heapFibonacci.printTree();
+    std::cout << (*heapFibonacci.getMin())->obtenerDato() << std::endl;
+    heapFibonacci.extractMin();
+    std::cout << (*heapFibonacci.getMin())->obtenerDato() << std::endl;
+    heapFibonacci.printTree();
 
     return 0;
 }
