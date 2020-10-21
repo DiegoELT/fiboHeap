@@ -1,7 +1,10 @@
-/*#include <iostream>
+#include <iostream>
 #include <list>
 #include <vector>
 #include <cmath>
+#include <fstream>
+
+#include "CImg.h"
 
 template <typename T>
 class NodoFibonacci{
@@ -9,7 +12,7 @@ private:
     T m_dato{};
     std::list<NodoFibonacci<T> *> m_hijos;
 public:
-    NodoFibonacci(T m_dato) : m_dato(m_dato) {};
+    explicit NodoFibonacci(T m_dato) : m_dato(m_dato) {};
     T obtenerDato(){
         return this -> m_dato;
     }
@@ -106,8 +109,28 @@ public:
     }
 };
 
+struct imagen {
+    std::string ruta;
+    std::vector <float> vc;
+};
+
+struct arista {
+    std::string origen;
+    std::string destino;
+    float peso{};
+};
+
+std::vector <float> vectorizar(cimg_library::CImg <float> &img) {
+    std::vector <float> R;
+    cimg_forXY(img, x, y) {
+            R.emplace_back((img(x,y,0) + img(x,y,1) + img(x,y,2)) / 3);
+        }
+    return R;
+}
+
 int main() {
-    HeapFibonacci<int> testFib;
+    // Test de estres
+    /*HeapFibonacci<int> testFib;
     for(int i = 10000; i >= 1; i--){
         testFib.insert(i);
     }
@@ -116,58 +139,27 @@ int main() {
         testFib.extractMin();
     }
     std::cout << (*testFib.getMin())->obtenerDato() << std::endl;
-    return 0;
-}*/
+    return 0;*/
 
-#include <iostream>
-#include <vector>
-#include <fstream>
+    system("ls ../prueba/ \"*.jpg\" > ../database.txt");
 
-#include "CImg.h"
+    std::vector <arista> aristas;
 
-using namespace cimg_library;
-using namespace std;
+    std::vector <imagen> imagenes;
 
-struct imagen {
-    string ruta;
-    vector <float> vc;
-};
-
-struct arista {
-    string origen;
-    string destino;
-    float peso{};
-};
-
-vector <float> vectorizar(CImg <float> &img) {
-    vector <float> R;
-    cimg_forXY(img, x, y) {
-        R.emplace_back((img(x,y,0) + img(x,y,1) + img(x,y,2)) / 3);
-    }
-    return R;
-}
-
-int main() {
-
-    system("ls ../imagenes/ \"*.jpg\" > ../database.txt");
-
-    vector <arista> aristas;
-
-    vector <imagen> imagenes;
-
-    ifstream rutas("../database.txt");
-    string ruta;
+    std::ifstream rutas("../database.txt");
+    std::string ruta;
     getline(rutas, ruta);
     while (getline(rutas, ruta)) {
         //cout << "../imagenes/" << ruta << endl;
-        string temp = "../imagenes/" + ruta;
-        CImg <float> A(temp.c_str());
+        std::string temp = "../prueba/" + ruta;
+        cimg_library::CImg <float> A(temp.c_str());
         A.resize(128,128);
         //cout << A._width << A._height << endl;
-        CImg <float> B = A.haar(false, 2);
-        CImg <float> C = B.crop(0,0,27,27);
+        cimg_library::CImg <float> B = A.haar(false, 2);
+        cimg_library::CImg <float> C = B.crop(0,0,27,27);
 
-        vector <float> vc = vectorizar(C);
+        std::vector <float> vc = vectorizar(C);
 
         imagen img;
         img.ruta = temp;
@@ -187,12 +179,14 @@ int main() {
             ar.destino = imagenes[j].ruta;
             float suma = 0;
             for (int k = 0; k < imagenes[i].vc.size(); k++) {
-                suma += pow(imagenes[i].vc[k] - imagenes[j].vc[k], 2);
+                suma += (float)pow(imagenes[i].vc[k] - imagenes[j].vc[k], 2);
             }
-            ar.peso = sqrt(suma);
+            ar.peso = (float)std::sqrt(suma);
             aristas.emplace_back(ar);
         }
     }
+
+    
 
     return 0;
 }
