@@ -4,8 +4,8 @@
 #include <vector>
 #include <cmath>
 #include <fstream>
-
 #include "CImg.h"
+#include <unordered_map>
 
 class Imagen {
 private:
@@ -49,6 +49,10 @@ public:
         return destino;
     }
 
+    string getOrigen(){return origen;}
+
+    string getDestino(){return destino;}
+
     void setDestino(const std::string &string) {
         Arista::destino = string;
     }
@@ -73,6 +77,9 @@ public:
     T obtenerDato(){
         return this -> m_dato;
     }
+
+    Arista obtenerArista(){ return arista;}
+
     T obtenerRango(){
         return this -> m_hijos.size();
     }
@@ -155,6 +162,10 @@ public:
         size++;
     }
 
+    NodoFibonacci<T>* getMin(){
+	return *m_pMin;
+    }
+
     void printTree(){
         for(auto elem : m_heap)
             std::cout << elem -> obtenerDato() << "," << elem -> obtenerRango() << " -> ";
@@ -164,6 +175,38 @@ public:
     int getSize(){
         return size;
     }
+
+    vector<Arista> Kruskal(){
+	//mapa de cada imagen, con su padre y el rango del padre.
+    	unordered_map<string, pair<string, int> sets;
+	vector<Arista> MST;
+	
+	while(size > 0){
+		Arista arista = (getMin())->obtenerArista();
+		extractMin();
+
+		auto origen = arista.getOrigen();
+                auto destino = arista.getDestino();
+
+		if(sets[origen]){}else{sets[destino] = make_pair(origen, 0)}
+		if(sets[destino]){}else{sets[destino] = make_pair(destino, 0)}
+
+		if(sets[origen].first != sets[destino].first){
+			MST.pushback(arista);
+			if(sets[origen].second > sets[destino].second ){
+				sets[destino].first = origen;
+			}else{
+				sets[origen].first = destino;
+			}
+
+			if(sets[origen].second == sets[destino].second){
+				sets[destino].second++;
+			}
+		}
+	}
+	
+	return MST;
+	}
 };
 
 std::vector <float> vectorizar(cimg_library::CImg <float> &img) {
