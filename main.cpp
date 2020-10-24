@@ -247,9 +247,9 @@ float distChebyshov(std::vector <Imagen> &imagenes, int i, int j) {
 float distMinkowski(std::vector <Imagen> &imagenes, int i, int j) {
     float suma = 0;
     for (int k = 0; k < imagenes[i].getVc().size(); k++) {
-        suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], imagenes[i].getVc().size());
+        suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], log2(imagenes[i].getVc().size()));
     }
-    float resultado = (float)pow(suma, 1/(double)imagenes[i].getVc().size());
+    float resultado = (float)pow(suma, 1/log2((double)imagenes[i].getVc().size()));
     return resultado;
 }
 
