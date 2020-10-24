@@ -5,7 +5,7 @@
 #include <cmath>
 #include <fstream>
 #include "CImg.h"
-#include <unordered_map>
+#include <map>
 
 class Imagen {
 private:
@@ -178,8 +178,8 @@ public:
 
     vector<Arista> Kruskal(){
 	//mapa de cada imagen, con su padre y el rango del padre.
-    	unordered_map<string, pair<string, int> sets;
-	vector<Arista> MST;
+    	std::map<std::string, std::pair <std::string, int>> sets;
+	std::vector<Arista> MST;
 	
 	while(size > 0){
 		Arista arista = (getMin())->obtenerArista();
@@ -188,19 +188,34 @@ public:
 		auto origen = arista.getOrigen();
                 auto destino = arista.getDestino();
 
-		if(sets[origen]){}else{sets[destino] = make_pair(origen, 0)}
-		if(sets[destino]){}else{sets[destino] = make_pair(destino, 0)}
+		auto it = sets.find(origen);
+		auto ot = sets.find(destino);
 
-		if(sets[origen].first != sets[destino].first){
-			MST.pushback(arista);
-			if(sets[origen].second > sets[destino].second ){
-				sets[destino].first = origen;
-			}else{
-				sets[origen].first = destino;
+		if( it != sets.end() ){}else{sets[origen] = make_pair(origen, 0);}
+		if( ot != sets.end()){}else{sets[destino] = make_pair(destino, 0);}
+
+		auto padreOrigen = sets[origen].first;
+		auto padreDestino = sets[destino].first;
+		while(sets[padreOrigen].first != padreOrigen){
+			padreOrigen = sets[padreOrigen].first;
+		}
+
+		while(sets[padreDestino].first != padreDestino){
+			padreDestino = sets[padreDestino].first;
+		}
+
+
+		if(padreOrigen != padreDestino){
+			MST.push_back(arista);
+			
+			if (sets[padreOrigen].second > sets[padreDestino].second){
+				sets[padreDestino].first = padreOrigen;
+		} else{
+				sets[padreOrigen].first = padreDestino;
 			}
 
-			if(sets[origen].second == sets[destino].second){
-				sets[destino].second++;
+			if(sets[padreOrigen].second == sets[padreDestino].second){
+				sets[padreDestino].second++;
 			}
 		}
 	}
