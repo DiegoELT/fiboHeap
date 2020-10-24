@@ -13,7 +13,7 @@ private:
     std::vector <float> vc;
 
 public:
-    std::string getRuta() {
+    const std::string getRuta() const {
         return ruta;
     }
 
@@ -37,28 +37,28 @@ private:
     float peso{};
 
 public:
-    std::string getOrigen() {
+    const std::string &getOrigen() const {
         return origen;
     }
 
-    void setOrigen(std::string &string) {
-        Arista::origen = string;
+    void setOrigen(const std::string &origen) {
+        Arista::origen = origen;
     }
 
-    std::string getDestino() {
+    const std::string &getDestino() const {
         return destino;
     }
 
-    void setDestino(const std::string &string) {
-        Arista::destino = string;
+    void setDestino(const std::string &destino) {
+        Arista::destino = destino;
     }
 
-    float getPeso() {
+    float getPeso() const {
         return peso;
     }
 
-    void setPeso(float d) {
-        Arista::peso = d;
+    void setPeso(float peso) {
+        Arista::peso = peso;
     }
 };
 
@@ -236,6 +236,7 @@ float distEuclideana(std::vector <Imagen> &imagenes, int i, int j){
 
 float distChebyshov(std::vector <Imagen> &imagenes, int i, int j) {
 	float resultado = 0;
+	float suma;
 	for (int k = 0; k < imagenes[i].getVc().size(); k++) {
         suma = imagenes[i].getVc()[k] - imagenes[j].getVc()[k];
         if (suma > resultado) resultado = suma;
@@ -248,7 +249,7 @@ float distMinkowski(std::vector <Imagen> &imagenes, int i, int j) {
     for (int k = 0; k < imagenes[i].getVc().size(); k++) {
         suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], imagenes[i].getVc().size());
     }
-    resultado = (float)pow(suma, 1/imagenes[i].getVc().size()));
+    float resultado = (float)pow(suma, 1/(double)imagenes[i].getVc().size());
     return resultado;
 }
 
@@ -304,8 +305,7 @@ int main() {
             arista.setOrigen(imagenes[i].getRuta());
             arista.setDestino(imagenes[j].getRuta());
 
-
-	        float resultado = distEuclideana(imagenes, int i, int j);
+	        float resultado = distEuclideana(imagenes, i, j);
 	        //float resultado = distChebyshov(imagenes, int i, int j);
 	        //float resultado = distMinkowski(imagenes, int i, int j);
 	        arista.setPeso(resultado);
