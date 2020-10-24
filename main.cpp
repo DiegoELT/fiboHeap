@@ -256,7 +256,7 @@ float distMinkowski(std::vector <Imagen> &imagenes, int i, int j) {
 void exportar(std::vector <Imagen> &imagenes, std::vector <Arista> &aristas) {
     std::fstream graphviz;
     std::string grafo;
-    graphviz.open("../grafo.vz", std::ios::out);
+    graphviz.open("../grafo.gv", std::ios::out);
     if (!graphviz.is_open()) {
         std::cout << "Error al exportar archivo" << std::endl;
         return;
@@ -266,7 +266,7 @@ void exportar(std::vector <Imagen> &imagenes, std::vector <Arista> &aristas) {
         grafo += "\t\"" + it.getRuta() + "\" [\n";
         grafo += "\t\timage = \"" + it.getRuta() + "\",\n";
         grafo += "\t\tlabel = \"\"\n";
-        grafo += "\t]\n";
+        grafo += "\t];\n";
     }
     for (const auto& it : aristas) {
         grafo += "\t\"" + it.getOrigen() + "\" -> \"" + it.getDestino() + "\"\n";
@@ -347,8 +347,8 @@ int main() {
 
     exportar(imagenes, aristas);
 
-    system("dot -Tsvg ../grafo.vz -o ../grafo.svg");
-    system("display ../grafo.svg");
+    system("dot -Tpng -o ../grafo.png ../grafo.gv");
+    system("display ../grafo.png");
 
     return 0;
 }
