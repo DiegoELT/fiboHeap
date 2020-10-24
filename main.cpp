@@ -232,6 +232,35 @@ std::vector <float> vectorizar(cimg_library::CImg <float> &img) {
     return R;
 }
 
+float distEuclideana(vector <Imagen> &imagenes, int i, int j){
+	 float suma = 0;
+            for (int k = 0; k < imagenes[i].getVc().size(); k++) {
+                suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], 2);
+            }
+	    float resultado = (float)std::sqrt(suma)
+	return resultado;
+}
+
+float distChebyshov(vector <Imagen> &imagenes, int i, int j){
+	float resultado = 0;
+		for (int k = 0; k < imagenes[i].getVc().size(); k++) {
+                suma = imagenes[i].getVc()[k] - imagenes[j].getVc()[k];
+		if (suma > resultado) resultado = suma;
+            }
+	return resultado;
+}
+
+float distMinkowski(vector <Imagen> &imagenes, int i, int j){
+		float suma = 0;
+            for (int k = 0; k < imagenes[i].getVc().size(); k++) {
+                suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], imagenes[i].getVc().size());
+            }
+            resultado = (float)pow(suma, 1/imagenes[i].getVc().size()));
+
+		return resultado;
+}
+
+
 int main() {
     // Test de estres
     /*HeapFibonacci<int> testFib;
@@ -276,16 +305,18 @@ int main() {
         //C.display();
     }
 
+	
     for (int i = 0; i < imagenes.size()-1; i++) {
         for (int j = i+1; j < imagenes.size(); j++) {
             Arista arista;
             arista.setOrigen(imagenes[i].getRuta());
             arista.setDestino(imagenes[j].getRuta());
-            float suma = 0;
-            for (int k = 0; k < imagenes[i].getVc().size(); k++) {
-                suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], 2);
-            }
-            arista.setPeso((float)std::sqrt(suma));
+
+
+	    float resultado = distEuclideana(imagenes, int i, int j);
+	    //float resultado = distChebyshov(imagenes, int i, int j);
+	    //float resultado = distMinkowski(imagenes, int i, int j);
+            arista.setPeso(resultado);
             aristas.emplace_back(arista);
         }
     }
