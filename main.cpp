@@ -13,20 +13,20 @@ private:
     std::vector <float> vc;
 
 public:
-    const std::string &getRuta() const {
+    std::string getRuta() {
         return ruta;
     }
 
-    void setRuta(const std::string &string) {
-        Imagen::ruta = string;
+    void setRuta(const std::string &ruta) {
+        Imagen::ruta = ruta;
     }
 
-    const std::vector<float> &getVc() const {
+    std::vector<float> getVc() {
         return vc;
     }
 
-    void setVc(const std::vector<float> &vector) {
-        Imagen::vc = vector;
+    void setVc(const std::vector<float> &vc) {
+        Imagen::vc = vc;
     }
 };
 
@@ -37,27 +37,23 @@ private:
     float peso{};
 
 public:
-    const std::string &getOrigen() const {
+    std::string getOrigen() {
         return origen;
     }
 
-    void setOrigen(const std::string &string) {
+    void setOrigen(std::string &string) {
         Arista::origen = string;
     }
 
-    const std::string &getDestino() const {
+    std::string getDestino() {
         return destino;
     }
-
-    string getOrigen(){return origen;}
-
-    string getDestino(){return destino;}
 
     void setDestino(const std::string &string) {
         Arista::destino = string;
     }
 
-    float getPeso() const {
+    float getPeso() {
         return peso;
     }
 
@@ -162,8 +158,8 @@ public:
         size++;
     }
 
-    NodoFibonacci<T>* getMin(){
-	return *m_pMin;
+    NodoFibonacci<T>* getMinimo() {
+	    return *m_pMin;
     }
 
     void printTree(){
@@ -176,52 +172,49 @@ public:
         return size;
     }
 
-    vector<Arista> Kruskal(){
-	//mapa de cada imagen, con su padre y el rango del padre.
-    	std::map<std::string, std::pair <std::string, int>> sets;
-	std::vector<Arista> MST;
-	
-	while(size > 0){
-		Arista arista = (getMin())->obtenerArista();
-		extractMin();
+    std::vector <Arista> Kruskal() {
+        //mapa de cada imagen, con su padre y el rango del padre.
+        std::map<std::string, std::pair <std::string, int>> sets;
+        std::vector<Arista> MST;
 
-		auto origen = arista.getOrigen();
-                auto destino = arista.getDestino();
+        while (size > 0){
+            Arista arista = (getMinimo())->obtenerArista();
+            extractMin();
 
-		auto it = sets.find(origen);
-		auto ot = sets.find(destino);
+            auto origen = arista.getOrigen();
+            auto destino = arista.getDestino();
 
-		if( it != sets.end() ){}else{sets[origen] = make_pair(origen, 0);}
-		if( ot != sets.end()){}else{sets[destino] = make_pair(destino, 0);}
+            auto it = sets.find(origen);
+            auto ot = sets.find(destino);
 
-		auto padreOrigen = sets[origen].first;
-		auto padreDestino = sets[destino].first;
-		while(sets[padreOrigen].first != padreOrigen){
-			padreOrigen = sets[padreOrigen].first;
-		}
+            if( it != sets.end() ){}else{sets[origen] = make_pair(origen, 0);}
+            if( ot != sets.end()){}else{sets[destino] = make_pair(destino, 0);}
 
-		while(sets[padreDestino].first != padreDestino){
-			padreDestino = sets[padreDestino].first;
-		}
+            auto padreOrigen = sets[origen].first;
+            auto padreDestino = sets[destino].first;
+            while(sets[padreOrigen].first != padreOrigen) {
+                padreOrigen = sets[padreOrigen].first;
+            }
 
+            while(sets[padreDestino].first != padreDestino){
+                padreDestino = sets[padreDestino].first;
+            }
 
-		if(padreOrigen != padreDestino){
-			MST.push_back(arista);
-			
-			if (sets[padreOrigen].second > sets[padreDestino].second){
-				sets[padreDestino].first = padreOrigen;
-		} else{
-				sets[padreOrigen].first = padreDestino;
-			}
+            if(padreOrigen != padreDestino){
+                MST.push_back(arista);
+                if (sets[padreOrigen].second > sets[padreDestino].second){
+                    sets[padreDestino].first = padreOrigen;
+                } else{
+                    sets[padreOrigen].first = padreDestino;
+                }
 
-			if(sets[padreOrigen].second == sets[padreDestino].second){
-				sets[padreDestino].second++;
-			}
-		}
-	}
-	
-	return MST;
-	}
+                if(sets[padreOrigen].second == sets[padreDestino].second){
+                    sets[padreDestino].second++;
+                }
+            }
+        }
+        return MST;
+    }
 };
 
 std::vector <float> vectorizar(cimg_library::CImg <float> &img) {
@@ -232,32 +225,31 @@ std::vector <float> vectorizar(cimg_library::CImg <float> &img) {
     return R;
 }
 
-float distEuclideana(vector <Imagen> &imagenes, int i, int j){
-	 float suma = 0;
-            for (int k = 0; k < imagenes[i].getVc().size(); k++) {
-                suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], 2);
-            }
-	    float resultado = (float)std::sqrt(suma)
+float distEuclideana(std::vector <Imagen> &imagenes, int i, int j){
+    float suma = 0;
+    for (int k = 0; k < imagenes[i].getVc().size(); k++) {
+        suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], 2);
+    }
+    auto resultado = (float)std::sqrt(suma);
 	return resultado;
 }
 
-float distChebyshov(vector <Imagen> &imagenes, int i, int j){
+float distChebyshov(std::vector <Imagen> &imagenes, int i, int j) {
 	float resultado = 0;
-		for (int k = 0; k < imagenes[i].getVc().size(); k++) {
-                suma = imagenes[i].getVc()[k] - imagenes[j].getVc()[k];
-		if (suma > resultado) resultado = suma;
-            }
+	for (int k = 0; k < imagenes[i].getVc().size(); k++) {
+        suma = imagenes[i].getVc()[k] - imagenes[j].getVc()[k];
+        if (suma > resultado) resultado = suma;
+    }
 	return resultado;
 }
 
-float distMinkowski(vector <Imagen> &imagenes, int i, int j){
-		float suma = 0;
-            for (int k = 0; k < imagenes[i].getVc().size(); k++) {
-                suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], imagenes[i].getVc().size());
-            }
-            resultado = (float)pow(suma, 1/imagenes[i].getVc().size()));
-
-		return resultado;
+float distMinkowski(std::vector <Imagen> &imagenes, int i, int j) {
+    float suma = 0;
+    for (int k = 0; k < imagenes[i].getVc().size(); k++) {
+        suma += (float)pow(imagenes[i].getVc()[k] - imagenes[j].getVc()[k], imagenes[i].getVc().size());
+    }
+    resultado = (float)pow(suma, 1/imagenes[i].getVc().size()));
+    return resultado;
 }
 
 
@@ -313,11 +305,11 @@ int main() {
             arista.setDestino(imagenes[j].getRuta());
 
 
-	    float resultado = distEuclideana(imagenes, int i, int j);
-	    //float resultado = distChebyshov(imagenes, int i, int j);
-	    //float resultado = distMinkowski(imagenes, int i, int j);
-            arista.setPeso(resultado);
-            aristas.emplace_back(arista);
+	        float resultado = distEuclideana(imagenes, int i, int j);
+	        //float resultado = distChebyshov(imagenes, int i, int j);
+	        //float resultado = distMinkowski(imagenes, int i, int j);
+	        arista.setPeso(resultado);
+	        aristas.emplace_back(arista);
         }
     }
 
