@@ -253,6 +253,28 @@ float distMinkowski(std::vector <Imagen> &imagenes, int i, int j) {
     return resultado;
 }
 
+void exportar(std::vector <Imagen> &imagenes, std::vector <Arista> &aristas) {
+    std::fstream graphviz;
+    std::string grafo;
+    graphviz.open("../grafo.vz", std::ios::out);
+    if (!graphviz.is_open()) {
+        std::cout << "Error al exportar archivo" << std::endl;
+        return;
+    }
+    grafo = "digraph {\n";
+    for (const auto& it : imagenes) {
+        grafo += "\t\"" + it.getRuta() + "\" [\n";
+        grafo += "\t\timage = \"" + it.getRuta() + "\",\n";
+        grafo += "\t\tlabel = \"\"\n";
+        grafo += "\t]\n";
+    }
+    for (const auto& it : aristas) {
+        grafo += "\t\"" + it.getOrigen() + "\" -> \"" + it.getDestino() + "\"\n";
+    }
+    grafo += "}";
+    graphviz << grafo;
+    graphviz.close();
+}
 
 int main() {
     // Test de estres
@@ -322,6 +344,11 @@ int main() {
     heapFibonacci.extractMin();
     std::cout << (*heapFibonacci.getMin())->obtenerDato() << std::endl;
     heapFibonacci.printTree();
+
+    exportar(imagenes, aristas);
+
+    system("dot -Tsvg ../grafo.vz -o ../grafo.svg");
+    system("display ../grafo.svg");
 
     return 0;
 }
