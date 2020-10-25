@@ -1,1 +1,0 @@
-/usr/bin/c++  -lpthread -g   CMakeFiles/Arbol_Fibonacci.dir/main.cpp.o  -o Arbol_Fibonacci  -lX11 -lpthread 

@@ -1,3 +1,0 @@
-/home/piero/Downloads/fiboHeap/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/piero/Downloads/fiboHeap/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/piero/Downloads/fiboHeap/cmake-build-debug/CMakeFiles/Arbol_Fibonacci.dir
