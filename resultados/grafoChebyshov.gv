@@ -245,7 +245,4 @@ digraph {
 	"../prueba/9338446.3.jpg" -> "../prueba/9338446.8.jpg"
 	"../prueba/9338446.10.jpg" -> "../prueba/9338446.9.jpg"
 	"../prueba/9336923.1.jpg" -> "../prueba/9338446.10.jpg"
-	"../prueba/9338446.3.jpg" -> "../prueba/9338446.9.jpg"
-	"../prueba/9332898.19.jpg" -> "../prueba/9336923.1.jpg"
-	"../prueba/9326871.15.jpg" -> "../prueba/9338446.10.jpg"
 }

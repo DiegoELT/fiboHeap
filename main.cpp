@@ -178,7 +178,7 @@ public:
         std::map<std::string, std::pair <std::string, int>> sets;
         std::vector<Arista> MST;
 	    auto n = size;
-        while (MST.size() != ((1+std::sqrt(1+8*n))/2)-1 && size > 1) {
+        while (MST.size() != ((1+std::sqrt(1+8*n))/2)-1 && size > 1 /*&& MST.size() <= ((1+std::sqrt(1+8*n))/2)-4*/) {
             Arista arista = (getMinimo())->obtenerArista();
             extractMin();
 
@@ -331,9 +331,9 @@ int main() {
             arista.setOrigen(imagenes[i].getRuta());
             arista.setDestino(imagenes[j].getRuta());
 
-	        float resultado = distEuclideana(imagenes, i, j);
+	        //float resultado = distEuclideana(imagenes, i, j);
 	        //float resultado = distChebyshov(imagenes, i, j);
-	        //float resultado = distMinkowski(imagenes, i, j);
+	        float resultado = distMinkowski(imagenes, i, j);
 	        arista.setPeso(resultado);
 	        aristas.emplace_back(arista);
         }
