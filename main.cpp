@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath>
 #include <fstream>
+#include <chrono>
 #include "CImg.h"
 #include <map>
 
@@ -298,6 +299,9 @@ int main() {
     std::ifstream rutas("../database.txt");
     std::string ruta;
     getline(rutas, ruta);
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     while (getline(rutas, ruta)) {
         //cout << "../imagenes/" << ruta << endl;
         std::string temp = "../prueba/" + ruta;
@@ -345,7 +349,14 @@ int main() {
     std::cout << (*heapFibonacci.getMin())->obtenerDato() << std::endl;
     heapFibonacci.printTree();
 
-    exportar(imagenes, aristas);
+    std::vector <Arista> aristas2 = heapFibonacci.Kruskal();
+    exportar(imagenes, aristas2);
+
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+
+    std::cout << "Duracion: " << duration.count() << " seconds";
 
     system("dot -Tpng -o ../grafo.png ../grafo.gv");
     system("display ../grafo.png");
