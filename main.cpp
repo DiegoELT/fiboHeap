@@ -176,8 +176,8 @@ public:
         //mapa de cada imagen, con su padre y el rango del padre.
         std::map<std::string, std::pair <std::string, int>> sets;
         std::vector<Arista> MST;
-
-        while (size > 0){
+	auto n = size;
+        while (MST.size() != (1+std::sqrt(1+8*n)/2) ){
             Arista arista = (getMinimo())->obtenerArista();
             extractMin();
 
