@@ -332,8 +332,8 @@ int main() {
             arista.setDestino(imagenes[j].getRuta());
 
 	        float resultado = distEuclideana(imagenes, i, j);
-	        //float resultado = distChebyshov(imagenes, int i, int j);
-	        //float resultado = distMinkowski(imagenes, int i, int j);
+	        //float resultado = distChebyshov(imagenes, i, j);
+	        //float resultado = distMinkowski(imagenes, i, j);
 	        arista.setPeso(resultado);
 	        aristas.emplace_back(arista);
         }
