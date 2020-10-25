@@ -177,7 +177,7 @@ public:
         std::map<std::string, std::pair <std::string, int>> sets;
         std::vector<Arista> MST;
 	auto n = size;
-        while (MST.size() != (1+std::sqrt(1+8*n)/2) ){
+        while (MST.size() != (1+std::sqrt(1+8*n)/2)-1 ){
             Arista arista = (getMinimo())->obtenerArista();
             extractMin();
 
